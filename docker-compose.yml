@@ -1,0 +1,42 @@
+# 参考サイト: http://tech.degica.com/ja/2016/06/14/dockerized-rails-development/
+# 設定のリファレンスURL: https://docs.docker.com/compose/compose-file/
+
+version: '2' # Ref: https://docs.docker.com/compose/compose-file/#/version-2
+services:
+  serve:
+    build:
+      context: .
+      args:
+        - APP_HOME=/myapp
+    command: ng serve --host 0.0.0.0
+    ports:
+     - "4200:4200" # 内部の 4200番ポート と 外部の 4200番ポートを
+    volumes:
+     - .:/myapp/ # カレントディレクトリをマウント
+     - /myapp/typings # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+     - /myapp/node_modules # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+  test:
+    build:
+      context: .
+      args:
+        - APP_HOME=/myapp
+    command: ng test --single-run
+    ports:
+     - "4200:4200" # 内部の 4200番ポート と 外部の 4200番ポートを
+    volumes:
+     - .:/myapp/ # カレントディレクトリをマウント
+     - /myapp/typings # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+     - /myapp/node_modules # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+  e2e:
+    build:
+      dockerfile: Dockerfile-e2e
+      context: .
+      args:
+        - APP_HOME=/myapp
+    # command: ng e2e
+    ports:
+     - "4200:4200" # 内部の 4200番ポート と 外部の 4200番ポートを
+    volumes:
+     - .:/myapp/ # カレントディレクトリをマウント
+     - /myapp/typings # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+     - /myapp/node_modules # http://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
