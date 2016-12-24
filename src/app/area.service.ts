@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 
 import { Area }           from './area';
@@ -11,8 +12,10 @@ export class AreaService {
 
   list() {
     console.log('list');
+    let headers = new Headers({ 'Access-Control-Allow-Origin': '*' });
+    let options = new RequestOptions({ headers: headers });
     return this.http
-               .get(`http://localhost:3000/v1/areas`)
+               .get(`https://stg-api.redish.jp/v1/areas`, options)
                .map(this.extractData)
                .catch(this.handleError);
   }
